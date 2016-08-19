@@ -78,7 +78,7 @@ def Plot_B_Field(width,height,length):
 	v = [0 for i in range(height)]
 	w = [1 for i in range(length)]
 	
-	ax.quiver(x, y, z, u, v, w, normalize = False, color = 'r')
+	ax.quiver(x, y, z, u, v, w, normalize = True, color = 'r')
 #End Current Density Field Quiver and Generation.
 
 #Begin B Field Quiver and Generation.
@@ -101,7 +101,7 @@ def Plot_B_Field(width,height,length):
 		v.append(value[1])
 		w.append(value[2])
 
-	ax.quiver(x, y, z, u, v, w, normalize = False)
+	ax.quiver(x, y, z, u, v, w, normalize = True)
 #End B Field Quiver and Generation.
 	
 	plt.show()
