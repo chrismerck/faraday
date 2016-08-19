@@ -11,7 +11,7 @@ def Biot_Savart_Calc(J,x,y,z):
 	'''
 		Description: Calculates the dB for a specific point. Not the entire magnetic field at that point but just one part.
 		Params: //:TODO, document
-	Return: Vector representing the B at a point
+		Return: Vector representing the B at a point
 	'''
 	B = (0,0,0)
 	for JVec,v in J.items(): #JVec is the key also.
@@ -51,7 +51,6 @@ def Plot_B_Field(width,height,length):
 		Params: //:TODO, document, dimensions of cube and J is the current density vector field.
 		Return: None
 	'''
-	# Dimensions of cube 
 	
 	fig = plt.figure()
 	ax = fig.gca(projection='3d')
@@ -61,16 +60,14 @@ def Plot_B_Field(width,height,length):
 	ax.set_ylabel('Y')
 	ax.set_zlabel('Z')
 
-
-
 	ax.set_xlim([0,width])
 	ax.set_ylim([0,height])
 	ax.set_zlim([0,length])
 
 	
 #Begin Current Density Field Quiver and Generation.
-	x = [3 for i in range(width)]
-	y = [3 for i in range(height)]
+	x = [width/2 for i in range(width)]
+	y = [height/2 for i in range(height)]
 	z = [i for i in range(length)]
 
 	JKeys = list(zip(x, y, z))
@@ -81,7 +78,7 @@ def Plot_B_Field(width,height,length):
 	v = [0 for i in range(height)]
 	w = [1 for i in range(length)]
 	
-	ax.quiver(x, y, z, u, v, w, length=0.75, color = 'r')
+	ax.quiver(x, y, z, u, v, w, normalize = False, color = 'r')
 #End Current Density Field Quiver and Generation.
 
 #Begin B Field Quiver and Generation.
@@ -104,10 +101,10 @@ def Plot_B_Field(width,height,length):
 		v.append(value[1])
 		w.append(value[2])
 
-	ax.quiver(x, y, z, u, v, w, length=0.5)
+	ax.quiver(x, y, z, u, v, w, normalize = False)
 #End B Field Quiver and Generation.
 	
 	plt.show()
 
-Plot_B_Field(6,6,6) # Limitation: Must be a cube. So for example, 
+Plot_B_Field(7,7,7) # Limitation: Must be a cube. So for example, 
 					# the arguments 2,3,5 will not work because they do not for a cube.
