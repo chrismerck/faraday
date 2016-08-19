@@ -1,11 +1,48 @@
 #TODO: Generalize all of the functions
 #TODO: Add a single option that controlls the resolution, or how precise the calculations are going to be
-#TODO: Document and and re-write some of the code once everything is working proepry. Optimize too.
+#TODO: Document and and re-write some of the code once everything is working proepry. Just PEP 8 everything. Optimize too.
 
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import linalg
+
+def Scale_Vector_Field(vectorField,magScale,minMagScale,maxMagScale):
+	'''
+		Description:
+			Allows for the scaling of the quiver vectors so they can be visualized properly.
+		Params: 
+			@vectorField The vector field that is to be scaled, in the form of a dict that has the values as the magnitude components.
+			@magScale A scalar scale value which all of magnetutides are to be scaled by.
+			@minMagScale The minumum magnitude of the quiver arrows. A scalar.
+			@maxMagScale The maximum magnitude of the quiver arrows. A scalar.
+  		
+		Return: 
+			A vector field scaled to the appropriate values.
+	'''
+
+	newVectorField = {}
+
+	for posVec,magVec in vectorField.items():
+		
+		mag = np.linalg.norm(magVec)
+
+		unitX = magVec[0]/mag
+		unitY = magVec[1]/mag
+		unitZ = magVec[2]/mag
+		
+		scaledMag = mag * magScale
+		if scaledMag < minMagScale:
+			scaledVec = (unitX * minMagScale, unitY * minMagScale, unitZ * minMagScale)
+			newVectorField[posVec] = scaledVec
+		elif scaledMag > maxMagScale:
+			scaledVec = (unitX * maxMagScale, unitY * maxMagScale, unitZ * maxMagScale)
+			newVectorField[posVec] = scaledVec
+		else:			
+			scaledVec = (magVec[0] * magScale, magVec[1] * magScale, magVec[2] * magScale)
+			newVectorField[posVec] = scaledVec
+
+	return newVectorField
 
 def Biot_Savart_Calc(J,x,y,z):
 	'''
@@ -82,7 +119,14 @@ def Plot_B_Field(width,height,length):
 #End Current Density Field Quiver and Generation.
 
 #Begin B Field Quiver and Generation.
-	B = B_Field_Calc(width, height, length, J, JKeys)
+
+	MIN_TESLA = 0.1
+	MAX_TESLA = 1
+	TESLA_SCALE = 1 * (10**6)
+
+	_B = B_Field_Calc(width, height, length, J, JKeys)
+
+	B = Scale_Vector_Field(_B, TESLA_SCALE, MIN_TESLA, MAX_TESLA)
 
 	x = []
 	y = []
@@ -101,7 +145,7 @@ def Plot_B_Field(width,height,length):
 		v.append(value[1])
 		w.append(value[2])
 
-	ax.quiver(x, y, z, u, v, w, normalize = True)
+	ax.quiver(x, y, z, u, v, w, normalize = False)
 #End B Field Quiver and Generation.
 	
 	plt.show()
