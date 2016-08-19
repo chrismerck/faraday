@@ -69,19 +69,19 @@ def Plot_B_Field(width,height,length):
 
 	
 #Begin Current Density Field Quiver and Generation.
-	x = [3 for x in range(width)] # Creates a list of 11 numbers '6' -
-	y = [3 for x in range(height)] # Creates a list of 11 numbers '6'  -- These lists are the x,y,z coordinate pairs.
-	z = [x for x in range(length)] # Creates a list of 1,2,3,4...,11. -
+	x = [3 for i in range(width)]
+	y = [3 for i in range(height)]
+	z = [i for i in range(length)]
 
-	JKeys = zip(x, y, z)
+	JKeys = list(zip(x, y, z))
 
-	J = {x : 1 for x in JKeys}
+	J = {i : 1 for i in JKeys}
 
-	u = [0 for x in range(width)]
-	v = [0 for x in range(height)]
-	w = [1 for x in range(length)]
+	u = [0 for i in range(width)]
+	v = [0 for i in range(height)]
+	w = [1 for i in range(length)]
 	
-	ax.quiver(x, y, z, u, v, w, length=0.5, color = 'r')
+	ax.quiver(x, y, z, u, v, w, length=0.75, color = 'r')
 #End Current Density Field Quiver and Generation.
 
 #Begin B Field Quiver and Generation.
