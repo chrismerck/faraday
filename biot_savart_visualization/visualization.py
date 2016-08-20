@@ -73,10 +73,13 @@ def B_Field_Calc(width, height, length, J, JKeys):
 	'''
 	
 	B_Field = {}
-	
-	for x in range(width):
-		for y in range(height):
-			for z in range(length):
+
+	resolution = 4**1 # Change this value if you want to change the resolution. Obviously needs to be abstracted but for now it serves as a proof of concept.
+	step = 1/resolution
+
+	for x in np.arange(0,width,step):
+		for y in np.arange(0,height,step):
+			for z in np.arange(0,length,step):
 				B_Field_Key = (x,y,z)
 				if B_Field_Key not in JKeys:
 					B_Field[B_Field_Key] = Biot_Savart_Calc(J, x, y, z)
@@ -120,8 +123,8 @@ def Plot_B_Field(width,height,length):
 
 #Begin B Field Quiver and Generation.
 
-	MIN_TESLA = 0.1
-	MAX_TESLA = 1
+	MIN_TESLA = 0.01
+	MAX_TESLA = 0.5
 	TESLA_SCALE = 1 * (10**6)
 
 	_B = B_Field_Calc(width, height, length, J, JKeys)
@@ -150,5 +153,5 @@ def Plot_B_Field(width,height,length):
 	
 	plt.show()
 
-Plot_B_Field(7,7,7) # Limitation: Must be a cube. So for example, 
+Plot_B_Field(3,3,3) # Limitation: Must be a cube. So for example, 
 					# the arguments 2,3,5 will not work because they do not for a cube.
