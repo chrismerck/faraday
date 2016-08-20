@@ -12,3 +12,4 @@ The newest matplotlib version is required because of the normalization feature a
 - [ ] Re-write resolution feature with the dictionary idea.
 - [ ] Decouple current from a few things.
 - [ ] Custom current input.
+- [ ] Conform to PEP 8 standards.
