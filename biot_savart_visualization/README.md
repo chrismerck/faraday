@@ -10,3 +10,5 @@ The newest matplotlib version is required because of the normalization feature a
 - [ ] Abstract code properply
 - [ ] Add a way for the user to specifiy settings during initial runtime of the program. Or load the settings from a file.
 - [ ] Re-write resolution feature with the dictionary idea.
+- [ ] Decouple current from a few things.
+- [ ] Custom current input.
