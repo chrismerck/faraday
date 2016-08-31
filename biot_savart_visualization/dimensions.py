@@ -1,17 +1,16 @@
-
 class Dimensions:
 
-	def __init__(self,startWidth,endWidth,startHeight,endHeight,startLength,endLength):
-
-		self.startWidth= startWidth # x
+	def __init__(self, startWidth, endWidth, startHeight, endHeight,
+		     startLength, endLength):
+		
+		self.startWidth = startWidth
 		self.endWidth = endWidth
- 
-		self.startHeight = startHeight # y
+
+		self.startHeight = startHeight
 		self.endHeight = endHeight
 
-		self.startLength = startLength # z
+		self.startLength = startLength
 		self.endLength = endLength
-		
 		
 		self.width = self.endWidth - self.startWidth
 		self.height = self.endHeight - self.startHeight
