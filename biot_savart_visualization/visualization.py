@@ -7,7 +7,7 @@ import field_generator
 import resolution
 import dimensions
 import vector_field
-import plot_config as config
+import plot_config as config # Delete as for consistency?
 import vf_scale
 import physics_calc
 
@@ -15,10 +15,10 @@ import physics_calc
 
 MIN_TESLA = 0.1 #TODO: Abstract. Probably abstracted with plotting stuff.
 MAX_TESLA = 0.75 #TODO: Abstract. Probably abstracted with plotting stuff.
-TESLA_SCALE = 1 * (10**4) #TODO:Abstract. Probably abstracted with plotting stuff.
+TESLA_SCALE = 1 * (10**5) #TODO:Abstract. Probably abstracted with plotting stuff.
 
 B_res = resolution.Resolution('base', 'base')
-B_dim = dimensions.Dimensions(0, 5, 0, 5, 0, 2)
+B_dim = dimensions.Dimensions(-5, 5, -5, 5, -5, 5) #problem with the 10 dimensions.
 B_scale = vf_scale.VF_Scale(MIN_TESLA, MAX_TESLA, TESLA_SCALE)
 
 J_res = resolution.Resolution('base', 'centi')
@@ -37,20 +37,19 @@ ax.set_xlim([B_dim.startWidth, B_dim.endWidth])
 ax.set_ylim([B_dim.startHeight, B_dim.endHeight])
 ax.set_zlim([B_dim.startLength, B_dim.endLength])
 
-J_config = config.PlotConfig(J_res, J_dim, J_scale)
-J_field = field_generator.CosCurrent(J_config)
+J_config = config.PlotConfig(J_res, J_dim)
+J_field = field_generator.CosCurrent(J_config).scale(J_scale)
 
 x,y,z,u,v,w = J_field.unpack()
 
 ax.quiver(x, y, z, u, v, w, normalize = False, color = 'r')
-	
-B_config = config.PlotConfig(B_res, B_dim, B_scale) 
-B_field = physics_calc.Biot_Savart(B_config, J_field).scale(B_scale) #TODO: Think on this scaling, should it be applied in the biot savart or somewhere in there? Since it is already applied in the J-field's generation.
+
+B_config = config.PlotConfig(B_res, B_dim) 
+B_field = physics_calc.Biot_Savart(B_config, J_field).scale(B_scale)
 
 x,y,z,u,v,w = B_field.unpack()
-print(u)
 ax.quiver(x, y, z, u, v, w, normalize = False)
-	
+
 plt.show()
 
 

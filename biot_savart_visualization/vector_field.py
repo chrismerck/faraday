@@ -1,4 +1,3 @@
-#TODO: Might need to add a function called 'unpack' that returns x,y,z,u,v,w as unpacabkel values since like we need them to quiver.
 import numpy as np
 import vf_scale
 
@@ -7,7 +6,7 @@ class VectorField:
 	def __init__(self,x,y,z,u,v,w):
 		
 		self.keys = list(zip(x,y,z))
-
+	
 		self.vec_field = { self.keys[i] : (u[i],v[i],w[i]) for i in range( len( self.keys)) }
 
 	def scale(self,vec_scale):

@@ -17,10 +17,10 @@ def CosCurrent(config):
 	x = np.arange(START, END, config.res.step)
 	y = ((config.dim.startHeight - config.dim.endHeight)/2) * np.sin(x * RADIANS)
 	z = [config.dim.startLength for k in range(len(x))] # Idk, I mean this seems fine right? Every coordiange will have 1 as the depth. Eh.
-	#The u,v,w components don't really matter, but they should be to an apporproiate scale.
+	#The u,v,w components don't really matter for the calculation, but for displaying they should be to an apporproiate scale.
 	
-	u = [config.dim.width/0.05 for k in range(len(z))]   #TODO
-	v = [config.dim.height/0.05 for k in range(len(z))] #TODO
-	w = [config.dim.startLength for k in range(len(z))]
+	u = [config.dim.width/0.05 for k in range(len(x))]   #TODO
+	v = [config.dim.height/0.05 for k in range(len(x))] #TODO
+	w = [config.dim.startLength for k in range(len(x))]
 	
-	return vector_field.VectorField(x,y,z,u,v,w).scale(config.scale)
+	return vector_field.VectorField(x,y,z,u,v,w)

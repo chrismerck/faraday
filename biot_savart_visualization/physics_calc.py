@@ -32,7 +32,6 @@ def Biot_Savart(B_config,J_field):
 
 	dim = B_config.dim
 	res = B_config.res
-	scale = B_config.scale
 
 	x = []
 	y = []
@@ -41,19 +40,18 @@ def Biot_Savart(B_config,J_field):
 	u = []
 	v = []
 	w = []
-
+	
 	for _x in np.arange(dim.startWidth,dim.endWidth,res.step):
 		for _y in np.arange(dim.startHeight,dim.endHeight,res.step):
 			for _z in np.arange(dim.startLength,dim.endLength,res.step):
-				x.append(_x)
-				y.append(_y)
-				z.append(_z)
 	
 				if (_x,_y,_z) not in J_field.keys:
+					x.append(_x)
+					y.append(_y)
+					z.append(_z)
 	
 					_u,_v,_w = _dB_calc(J_field, _x, _y, _z)
 					u.append(_u)
 					v.append(_v)
 					w.append(_w)
-
 	return vector_field.VectorField(x,y,z,u,v,w)
