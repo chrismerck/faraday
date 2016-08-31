@@ -1,157 +1,56 @@
-#TODO: Generalize all of the functions
-#TODO: Add a single option that controlls the resolution, or how precise the calculations are going to be
-#TODO: Document and and re-write some of the code once everything is working proepry. Just PEP 8 everything. Optimize too.
-
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import linalg
 
-def Scale_Vector_Field(vectorField,magScale,minMagScale,maxMagScale):
-	'''
-		Description:
-			Allows for the scaling of the quiver vectors so they can be visualized properly.
-		Params: 
-			@vectorField The vector field that is to be scaled, in the form of a dict that has the values as the magnitude components.
-			@magScale A scalar scale value which all of magnetutides are to be scaled by.
-			@minMagScale The minumum magnitude of the quiver arrows. A scalar.
-			@maxMagScale The maximum magnitude of the quiver arrows. A scalar.
-  		
-		Return: 
-			A vector field scaled to the appropriate values.
-	'''
+import field_generator
+import resolution
+import dimensions
+import vector_field
+import plot_config as config
+import vf_scale
+import physics_calc
 
-	newVectorField = {}
+#--- MAIN ---#
 
-	for posVec,magVec in vectorField.items():
-		
-		mag = np.linalg.norm(magVec)
+MIN_TESLA = 0.1 #TODO: Abstract. Probably abstracted with plotting stuff.
+MAX_TESLA = 0.75 #TODO: Abstract. Probably abstracted with plotting stuff.
+TESLA_SCALE = 1 * (10**4) #TODO:Abstract. Probably abstracted with plotting stuff.
 
-		unitX = magVec[0]/mag
-		unitY = magVec[1]/mag
-		unitZ = magVec[2]/mag
-		
-		scaledMag = mag * magScale
-		if scaledMag < minMagScale:
-			scaledVec = (unitX * minMagScale, unitY * minMagScale, unitZ * minMagScale)
-			newVectorField[posVec] = scaledVec
-		elif scaledMag > maxMagScale:
-			scaledVec = (unitX * maxMagScale, unitY * maxMagScale, unitZ * maxMagScale)
-			newVectorField[posVec] = scaledVec
-		else:			
-			scaledVec = (magVec[0] * magScale, magVec[1] * magScale, magVec[2] * magScale)
-			newVectorField[posVec] = scaledVec
+B_res = resolution.Resolution('base', 'base')
+B_dim = dimensions.Dimensions(0, 5, 0, 5, 0, 2)
+B_scale = vf_scale.VF_Scale(MIN_TESLA, MAX_TESLA, TESLA_SCALE)
 
-	return newVectorField
+J_res = resolution.Resolution('base', 'centi')
+J_dim = dimensions.Dimensions(0, 4, 0, 2, 2, 2) #TODO: The last argument doesn't do anything, should this mean that all of the arguments should be made optional and the user of this function is forced to look up the required argument list?
+J_scale = vf_scale.VF_Scale(0.1, 0.1, 1)
 
-def Biot_Savart_Calc(J,x,y,z):
-	'''
-		Description: Calculates the dB for a specific point. Not the entire magnetic field at that point but just one part.
-		Params: //:TODO, document
-		Return: Vector representing the B at a point
-	'''
-	B = (0,0,0)
-	for JVec,v in J.items(): #JVec is the key also.
-				
-		biotSavartConstant = 10 ** (-7) # The constant reduces down to this since the 4pis cancel out.
-		distVec = (x - JVec[0],y - JVec[1],z - JVec[2])
-		distVecMag = linalg.norm(distVec) # Distance between the two points.
-		distVecUnit = (distVec[0]/distVecMag,distVec[1]/distVecMag,distVec[2]/distVecMag) # Direction between the two points.
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.view_init(elev=18, azim=30)
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+ax.set_xlim([B_dim.startWidth, B_dim.endWidth])
+ax.set_ylim([B_dim.startHeight, B_dim.endHeight])
+ax.set_zlim([B_dim.startLength, B_dim.endLength])
+
+J_config = config.PlotConfig(J_res, J_dim, J_scale)
+J_field = field_generator.CosCurrent(J_config)
+
+x,y,z,u,v,w = J_field.unpack()
+
+ax.quiver(x, y, z, u, v, w, normalize = False, color = 'r')
 	
-		crossProduct = np.cross(JVec,distVecUnit)
-		dB = (biotSavartConstant * crossProduct) / (distVecMag ** 2)
-		
-		B = np.add(B,dB)
-		
-	return B
+B_config = config.PlotConfig(B_res, B_dim, B_scale) 
+B_field = physics_calc.Biot_Savart(B_config, J_field).scale(B_scale) #TODO: Think on this scaling, should it be applied in the biot savart or somewhere in there? Since it is already applied in the J-field's generation.
+
+x,y,z,u,v,w = B_field.unpack()
+print(u)
+ax.quiver(x, y, z, u, v, w, normalize = False)
 	
-def B_Field_Calc(width, height, length, J, JKeys):
-	'''
-		Description: Calcualtes the magnetic field based on a current.
-		Params: //:TODO, document, dimensions of cube and J is the current density vector field.
-		Return: Magnetic field
-	'''
-	
-	B_Field = {}
+plt.show()
 
-	resolution = 4**1 # Change this value if you want to change the resolution. Obviously needs to be abstracted but for now it serves as a proof of concept.
-	step = 1/resolution
 
-	for x in np.arange(0,width,step):
-		for y in np.arange(0,height,step):
-			for z in np.arange(0,length,step):
-				B_Field_Key = (x,y,z)
-				if B_Field_Key not in JKeys:
-					B_Field[B_Field_Key] = Biot_Savart_Calc(J, x, y, z)
-	return B_Field
-
-def Plot_B_Field(width,height,length):
-	'''
-		Description: Plots a quiver plot of the magnetic field around a current.
-		Params: //:TODO, document, dimensions of cube and J is the current density vector field.
-		Return: None
-	'''
-	
-	fig = plt.figure()
-	ax = fig.gca(projection='3d')
-	ax.view_init(elev=18, azim=30)
-
-	ax.set_xlabel('X')
-	ax.set_ylabel('Y')
-	ax.set_zlabel('Z')
-
-	ax.set_xlim([0,width])
-	ax.set_ylim([0,height])
-	ax.set_zlim([0,length])
-
-	
-#Begin Current Density Field Quiver and Generation.
-	x = [width/2 for i in range(width)]
-	y = [height/2 for i in range(height)]
-	z = [i for i in range(length)]
-
-	JKeys = list(zip(x, y, z))
-
-	J = {i : 1 for i in JKeys}
-
-	u = [0 for i in range(width)]
-	v = [0 for i in range(height)]
-	w = [1 for i in range(length)]
-	
-	ax.quiver(x, y, z, u, v, w, normalize = True, color = 'r')
-#End Current Density Field Quiver and Generation.
-
-#Begin B Field Quiver and Generation.
-
-	MIN_TESLA = 0.01
-	MAX_TESLA = 0.5
-	TESLA_SCALE = 1 * (10**6)
-
-	_B = B_Field_Calc(width, height, length, J, JKeys)
-
-	B = Scale_Vector_Field(_B, TESLA_SCALE, MIN_TESLA, MAX_TESLA)
-
-	x = []
-	y = []
-	z = []
-	
-	u = []
-	v = []
-	w = []
-	
-	for key,value in B.items():
-		x.append(key[0])
-		y.append(key[1])
-		z.append(key[2])
-		
-		u.append(value[0])
-		v.append(value[1])
-		w.append(value[2])
-
-	ax.quiver(x, y, z, u, v, w, normalize = False)
-#End B Field Quiver and Generation.
-	
-	plt.show()
-
-Plot_B_Field(3,3,3) # Limitation: Must be a cube. So for example, 
-					# the arguments 2,3,5 will not work because they do not for a cube.
