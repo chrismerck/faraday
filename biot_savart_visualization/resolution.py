@@ -6,10 +6,10 @@ class Resolution:
 		  'giga': 33, 'tera': 36, 'peta': 39, 'exa': 42, 'zetta': 45, 
 		  'yotta':48 }
 
-	def __init__(self, fromUnit, upToUnit, scalarTune=1):
+	def __init__(self, from_unit, up_to_unit, scalar_tune=1):
 
-		self.fromUnit = self.UNITS[fromUnit]
-		self.upToUnit = self.UNITS[upToUnit]
-		self.scalarTune = scalarTune
-		self.exp = self.fromUnit - self.upToUnit 
-		self.step = 1 / (self.scalarTune * (10**self.exp))
+		self.from_unit = self.UNITS[from_unit]
+		self.up_to_unit = self.UNITS[up_to_unit]
+		self.scalar_tune = scalar_tune
+		self.exp = self.from_unit - self.up_to_unit 
+		self.step = 1 / (self.scalar_tune * (10**self.exp))

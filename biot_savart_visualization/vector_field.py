@@ -10,37 +10,37 @@ class VectorField:
 
 	def scale(self, vec_scale):
 		
-		magScale = vec_scale.magScale
-		minMagScale = vec_scale.minMag
-		maxMagScale = vec_scale.maxMag
+		mag_scale = vec_scale.mag_scale
+		min_mag_scale = vec_scale.min_mag
+		max_mag_scale = vec_scale.max_mag
 
-		for posVec, magVec in self.vec_field.items():
+		for pos_vec, mag_vec in self.vec_field.items():
 			
-			mag = np.linalg.norm(magVec)       
+			mag = np.linalg.norm(mag_vec)       
 	         
-			unitX = magVec[0] / mag
-			unitY = magVec[1] / mag
-			unitZ = magVec[2] / mag
+			unit_x = mag_vec[0] / mag
+			unit_y = mag_vec[1] / mag
+			unit_z= mag_vec[2] / mag
 
-			scaledMag = mag * magScale
+			scaled_mag = mag * mag_scale
 			
-			if scaledMag < minMagScale:
-				scaledVec = (unitX * minMagScale, 
-					     unitY * minMagScale, 
-					     unitZ * minMagScale)    
-				self.vec_field[posVec] = scaledVec
+			if scaled_mag < min_mag_scale:
+				scaled_vec = (unit_x * min_mag_scale, 
+					      unit_y * min_mag_scale, 
+					      unit_z * min_mag_scale)    
+				self.vec_field[pos_vec] = scaled_vec
 			
-			elif scaledMag > maxMagScale:
-				scaledVec = (unitX * maxMagScale,
-					     unitY * maxMagScale,
-					     unitZ * maxMagScale)
-				self.vec_field[posVec] = scaledVec
+			elif scaled_mag > max_mag_scale:
+				scaled_vec = (unit_x * max_mag_scale,
+					      unit_y * max_mag_scale,
+					      unit_z * max_mag_scale)
+				self.vec_field[pos_vec] = scaled_vec
 			
 			else:
-				scaledVec = (magVec[0] * magScale, 
-					     magVec[1] * magScale, 
-					     magVec[2] * magScale)
-				self.vec_field[posVec] = scaledVec
+				scaled_vec = (mag_vec[0] * mag_scale, 
+					      mag_vec[1] * mag_scale, 
+					      mag_vec[2] * mag_scale)
+				self.vec_field[pos_vec] = scaled_vec
 		return self
 	
 	def unpack(self):

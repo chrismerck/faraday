@@ -30,17 +30,17 @@ ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 
-ax.set_xlim([B_dim.startWidth, B_dim.endWidth])
-ax.set_ylim([B_dim.startHeight, B_dim.endHeight])
-ax.set_zlim([B_dim.startLength, B_dim.endLength])
+ax.set_xlim([B_dim.start_width, B_dim.end_width])
+ax.set_ylim([B_dim.start_height, B_dim.end_height])
+ax.set_zlim([B_dim.start_length, B_dim.end_length])
 
 J_config = PlotConfig.PlotConfig(J_res, J_dim)
-J_field = field_generator.CosCurrent(J_config).scale(J_scale)
+J_field = field_generator.sin(J_config).scale(J_scale)
 x, y, z, u, v, w = J_field.unpack()
 ax.quiver(x, y, z, u, v, w, normalize=False, color='r')
 
 B_config = PlotConfig.PlotConfig(B_res, B_dim) 
-B_field = calc.Biot_Savart(B_config, J_field).scale(B_scale)
+B_field = calc.biot_savart(B_config, J_field).scale(B_scale)
 x, y, z, u, v, w = B_field.unpack()
 ax.quiver(x, y, z, u, v, w, normalize=False)
 
