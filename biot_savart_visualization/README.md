@@ -7,3 +7,4 @@ The newest matplotlib version is required because of the normalization feature a
 ### TODO (In no particular order)
 - [ ] Add a way for the user to specifiy settings during initial runtime of the program. Or load the settings from a file.
 - [ ] Custom current input.
+- [ ] Run spellcheck on all of the documentation.
