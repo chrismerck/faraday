@@ -1,15 +1,64 @@
 import numpy as np
 
 class VectorField:
-	
+	""" Wrapper around a dictionary in order to create a
+	more easily managable and extendable type.
+
+		Attributes:
+			keys (list): The (x,y,z) coordinates of vectors and
+				also the list of keys for the raw python dictionary.
+			vec_field (dict): The dictionary that contains the
+				vector field data. Entries into this dictionary 
+				are vectors in the form of '(x,y,z):(u,v,w)'.
+
+	"""	
 	def __init__(self, x, y, z, u, v, w):
-		
+		""" Creates a vector field from the paramaters. The data
+		structure used to represent the field is a dictionary.
+
+		Note:
+			Responsibility falls upon the caller to ensure that all
+				of the parameters are equal in length.
+
+		Args:
+			x: The positonal x components of the vectors inside the
+				vector field.
+			y: The positonal y components of the vectors inside the 
+				vector field.
+			z: The positonal z components of the vectors inside the
+				vector field.
+			u: The magnitudes in the x direction of the vectors
+				inside the vector field. 
+			v: The magnitudes in the y direction of the vectors
+				inside the vector field.
+			w: The magnitudes in the z direction of the vectors
+				inside the vector field.
+
+		"""
 		self.keys = list(zip(x, y, z))
 		self.vec_field = {self.keys[i] : (u[i], v[i], w[i]) 
 				  for i in range(len(self.keys))}
 
 	def scale(self, vec_scale):
+		""" Scales the vector field's vector magnitudes in accordance
+		to the settings in vec_scale. 
 		
+		Once a vector's magnitude is scaled, it is checked for being
+		too small, or too large. If one of these conditions is true,
+		the vector's magnitude is set to the minimum or maximum value 
+		respectively.
+		
+			Args:
+				vec_scale (VF_Scale): Holds the scale value,
+					the minumum vector magnitude, and the 
+					maximum vector magnitude.
+					
+			Returns:
+				VectorField: Returns self which is now the
+					modified and scaled version of the
+					vector field.
+
+		"""
 		mag_scale = vec_scale.mag_scale
 		min_mag_scale = vec_scale.min_mag
 		max_mag_scale = vec_scale.max_mag
@@ -42,9 +91,16 @@ class VectorField:
 					      mag_vec[2] * mag_scale)
 				self.vec_field[pos_vec] = scaled_vec
 		return self
-	
 	def unpack(self):
-		
+		""" Unpacks the components of a vector field into seperate
+		variables.
+
+			Returns:
+				tuple (x,y,z,u,v,w): Returns the individual
+					components of the vector field in a
+					tuple.
+
+		"""
 		x = []
 		y = []
 		z = []
